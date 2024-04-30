@@ -11,6 +11,23 @@ SENHA varchar (25) NOT NULL);
 
 select * from empresa;
 
+CREATE TABLE COMPONENTES (
+IDCOMPONENTES INT primary key auto_increment not null,
+DiscoTempoAtividade varchar (45),
+MemoriaDisponivel varchar(45),
+MemoriaUtilizada varchar(45),
+CPUNome varchar (45),
+JanelasEmUso varchar(45)
+);
+
+select * from COMPONENTES;
+
+
+
+
+
+
+
 
 
 
