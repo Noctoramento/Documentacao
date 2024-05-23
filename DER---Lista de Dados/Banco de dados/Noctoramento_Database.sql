@@ -2,6 +2,7 @@
 CREATE DATABASE Noctoramento;
 USE Noctoramento;
 
+-- Apagar o banco de dados:
 DROP DATABASE Noctoramento;
 
 -- Criação das tabelas:
@@ -26,6 +27,7 @@ INSERT INTO Cargo (nomeCargo) VALUES ('Gerente');
 INSERT INTO Cargo (nomeCargo) VALUES ('Analista');
 INSERT INTO Cargo (nomeCargo) VALUES ('Desenvolvedor');
 INSERT INTO Cargo (nomeCargo) VALUES ('Estagiário');
+INSERT INTO Cargo (nomeCargo) VALUES ('Suporte');
 
 CREATE TABLE Usuario (
 idUsuario INT AUTO_INCREMENT,
@@ -59,22 +61,18 @@ CONSTRAINT fkNotebook FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook),
 PRIMARY KEY (idInfoNotebook, fkEmpresa, fkNotebook)
 );
 
--- Daqui para baixo, será necessário atualizar!
-
 CREATE TABLE Alocacao(
 dataUsoInicio DATE NOT NULL,
 dataUsoFim DATE,
 fkNotebook INT NOT NULL,
-fkInfoNotebook INT NOT NULL,
 fkEmpresaNotebook INT NOT NULL,
 fkUsuario INT NOT NULL,
 fkEmpresaUsuario INT NOT NULL,
-CONSTRAINT fkNotebook FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook),
-CONSTRAINT fkInfoNotebookAlocacao FOREIGN KEY (fkInfoNotebook) REFERENCES InfoNotebook (idInfoNotebook),
-CONSTRAINT fkEmpresaNotebookAlocacao FOREIGN KEY (fkEmpresaNotebook) REFERENCES Empresa (idEmpresa),
-CONSTRAINT fkUsuario FOREIGN KEY (fkUsuario) REFERENCES Usuario (idUsuario),
-CONSTRAINT fkEmpresaUsuario FOREIGN KEY (fkEmpresaUsuario) REFERENCES Empresa (idEmpresa),
-PRIMARY KEY (fkNotebook, fkInfoNotebook, fkEmpresaNotebook, fkUsuario, fkEmpresaUsuario));
+CONSTRAINT fkNotebookAlocacao FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook),
+CONSTRAINT fkEmpresaNotebookAlocacao FOREIGN KEY (fkEmpresaNotebook) REFERENCES Notebook (fkEmpresa),
+CONSTRAINT fkUsuarioAlocacao FOREIGN KEY (fkUsuario) REFERENCES Usuario (idUsuario),
+CONSTRAINT fkEmpresaUsuarioAlocacao FOREIGN KEY (fkEmpresaUsuario) REFERENCES Usuario (fkEmpresa),
+PRIMARY KEY (fkNotebook, fkEmpresaNotebook, fkUsuario, fkEmpresaUsuario));
 
 CREATE TABLE ParametrosLimite(
 idParametrosLimite INT AUTO_INCREMENT,
@@ -93,23 +91,26 @@ usoMemoria DOUBLE,
 qtdJanelasEmUso INT,
 dtHoraCaptura DATETIME,
 fkNotebook INT NOT NULL,
-fkInfoNotebook INT NOT NULL,
+fkEmpresa INT NOT NULL,
 CONSTRAINT fkNotebookRegistroUsoNotebook FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook),
-CONSTRAINT fkInfoNotebookRegistroUsoNotebook FOREIGN KEY (fkInfoNotebook) REFERENCES InfoNotebook (idInfoNotebook),
-PRIMARY KEY (idRegistroUsoNotebook, fkNotebook, fkInfoNotebook)
+CONSTRAINT fkEmpresaRegistroUsoNotebook FOREIGN KEY (fkEmpresa) REFERENCES Notebook (fkEmpresa),
+PRIMARY KEY (idRegistroUsoNotebook, fkNotebook, fkEmpresa)
 );
 
 CREATE TABLE Alerta(
-fkParametrosLimite INT NOT NULL,
-fkEmpresa INT NOT NULL,
 fkRegistroUsoNotebook INT NOT NULL,
 fkNotebook INT NOT NULL,
-fkInfoNotebook INT NOT NULL,
-dtHora DATETIME,
-CONSTRAINT fkParametrosLimiteAlerta FOREIGN KEY (fkParametrosLimite) REFERENCES ParametrosLimite (idParametrosLimite),
-CONSTRAINT fkEmpresaAlerta FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa),
+fkEmpresaNotebook INT NOT NULL,
+fkParametrosLimite INT NOT NULL,
+fkEmpresaParametrosLimite INT NOT NULL,
+dtHoraAlerta DATETIME,
 CONSTRAINT fkRegistroUsoNotebookAlerta FOREIGN KEY (fkRegistroUsoNotebook) REFERENCES RegistroUsoNotebook (idRegistroUsoNotebook),
 CONSTRAINT fkNotebookAlerta FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook),
-CONSTRAINT fkInfoNotebookAlerta FOREIGN KEY (fkInfoNotebook) REFERENCES InfoNotebook (idInfoNotebook),
-PRIMARY KEY (fkParametrosLimite, fkEmpresa, fkRegistroUsoNotebook, fkNotebook, fkInfoNotebook)
+CONSTRAINT fkEmpresaNotebookAlerta FOREIGN KEY (fkEmpresaNotebook) REFERENCES Notebook (fkEmpresa),
+CONSTRAINT fkParametrosLimiteAlerta FOREIGN KEY (fkParametrosLimite) REFERENCES ParametrosLimite (idParametrosLimite),
+CONSTRAINT fkEmpresaParametrosLimiteAlerta FOREIGN KEY (fkEmpresaParametrosLimite) REFERENCES ParametrosLimite (fkEmpresa),
+PRIMARY KEY (fkRegistroUsoNotebook, fkNotebook, fkEmpresaNotebook, fkParametrosLimite, fkEmpresaParametrosLimite)
 );
+
+-- Apagar o banco de dados:
+DROP DATABASE Noctoramento;
