@@ -15,6 +15,9 @@ email VARCHAR(45),
 senha VARCHAR(45)
 );
 
+INSERT INTO Empresa (razaoSocial) VALUES
+('Noctoramento');
+
 -- SELECT * FROM Empresa
 
 -- INSERT INTO Empresa (razaoSocial, cnpjEmpresa, email, senha) 
@@ -47,19 +50,22 @@ CONSTRAINT fkEmpresa FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa),
 CONSTRAINT fkCargo FOREIGN KEY (fkCargo) REFERENCES Cargo (idCargo),
 PRIMARY KEY (idUsuario, fkEmpresa));
 
--- SELECT * FROM Usuario
+-- SELECT * FROM Usuario;
 
 CREATE TABLE Notebook(
 idNotebook INT AUTO_INCREMENT,
 numeroSerie VARCHAR(45),
 fabricante VARCHAR(45),
 modelo VARCHAR(45),
-dtRegistro DATETIME,
+dtRegistro TIMESTAMP DEFAULT NOW(),
 fkEmpresa INT,
 CONSTRAINT fkEmpresaNotebook FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa),
 PRIMARY KEY (idNotebook, fkEmpresa));
 
--- SELECT * FROM Notebook
+-- INSERT INTO Notebook (numeroSerie, fkEmpresa) VALUES
+-- (1234566, 1);
+
+-- SELECT * FROM Notebook;
 
 CREATE TABLE InfoNotebook(
 idInfoNotebook INT AUTO_INCREMENT,
