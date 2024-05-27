@@ -3,7 +3,7 @@ CREATE DATABASE Noctoramento;
 USE Noctoramento;
 
 -- Apagar o banco de dados:
-DROP DATABASE Noctoramento;
+-- DROP DATABASE Noctoramento;
 
 -- Criação das tabelas:
 
@@ -14,6 +14,14 @@ cnpjEmpresa CHAR(14),
 email VARCHAR(45),
 senha VARCHAR(45)
 );
+
+INSERT INTO Empresa (razaoSocial) VALUES
+('Noctoramento');
+
+-- SELECT * FROM Empresa
+
+-- INSERT INTO Empresa (razaoSocial, cnpjEmpresa, email, senha) 
+-- VALUES ('Noctoramento', '12345678000195', 'contato@noctoramento.com', 'urubu100');
 
 CREATE TABLE Cargo (
 idCargo INT PRIMARY KEY AUTO_INCREMENT,
@@ -29,6 +37,8 @@ INSERT INTO Cargo (nomeCargo) VALUES ('Desenvolvedor');
 INSERT INTO Cargo (nomeCargo) VALUES ('Estagiário');
 INSERT INTO Cargo (nomeCargo) VALUES ('Suporte');
 
+-- SELECT * FROM Cargo;
+
 CREATE TABLE Usuario (
 idUsuario INT AUTO_INCREMENT,
 nomeUsuario VARCHAR(45),
@@ -40,18 +50,25 @@ CONSTRAINT fkEmpresa FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa),
 CONSTRAINT fkCargo FOREIGN KEY (fkCargo) REFERENCES Cargo (idCargo),
 PRIMARY KEY (idUsuario, fkEmpresa));
 
+-- SELECT * FROM Usuario;
+
 CREATE TABLE Notebook(
 idNotebook INT AUTO_INCREMENT,
 numeroSerie VARCHAR(45),
-marca VARCHAR(45),
+fabricante VARCHAR(45),
+modelo VARCHAR(45),
+dtRegistro TIMESTAMP DEFAULT NOW(),
 fkEmpresa INT,
 CONSTRAINT fkEmpresaNotebook FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa),
 PRIMARY KEY (idNotebook, fkEmpresa));
 
+-- INSERT INTO Notebook (numeroSerie, fkEmpresa) VALUES
+-- (1234566, 1);
+
+-- SELECT * FROM Notebook;
+
 CREATE TABLE InfoNotebook(
 idInfoNotebook INT AUTO_INCREMENT,
-fabricante VARCHAR(45),
-modelo VARCHAR(45),
 sistemaOperacional VARCHAR(45),
 processador VARCHAR(45),
 capacidadeMaxCpu DOUBLE,
@@ -63,6 +80,8 @@ CONSTRAINT fkEmpresaInfoNotebook FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idE
 CONSTRAINT fkNotebook FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook),
 PRIMARY KEY (idInfoNotebook, fkEmpresa, fkNotebook)
 );
+
+-- SELECT * FROM InfoNotebook
 
 CREATE TABLE Alocacao(
 dataUsoInicio DATE,
@@ -77,6 +96,8 @@ CONSTRAINT fkUsuarioAlocacao FOREIGN KEY (fkUsuario) REFERENCES Usuario (idUsuar
 CONSTRAINT fkEmpresaUsuarioAlocacao FOREIGN KEY (fkEmpresaUsuario) REFERENCES Usuario (fkEmpresa),
 PRIMARY KEY (fkNotebook, fkEmpresaNotebook, fkUsuario, fkEmpresaUsuario));
 
+-- SELECT * FROM Alocacao
+
 CREATE TABLE Parametros(
 idParametros INT AUTO_INCREMENT,
 tempoSegCapturaDeDados INT,
@@ -90,6 +111,8 @@ alertaUsoMemoriaRam DOUBLE,
 fkEmpresa INT,
 CONSTRAINT fkEmpresaParametros FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa),
 PRIMARY KEY (idParametros, fkEmpresa));
+
+-- SELECT * FROM Parametros
 
 CREATE TABLE RegistroUsoNotebook(
 idRegistroUsoNotebook INT AUTO_INCREMENT,
@@ -106,6 +129,8 @@ CONSTRAINT fkEmpresaRegistroUsoNotebook FOREIGN KEY (fkEmpresa) REFERENCES Noteb
 PRIMARY KEY (idRegistroUsoNotebook, fkNotebook, fkEmpresa)
 );
 
+-- SELECT * FROM RegistroUsoNotebook
+
 CREATE TABLE Alerta(
 fkRegistroUsoNotebook INT,
 fkNotebook INT,
@@ -121,5 +146,7 @@ CONSTRAINT fkEmpresaParametrosAlerta FOREIGN KEY (fkEmpresaParametros) REFERENCE
 PRIMARY KEY (fkRegistroUsoNotebook, fkNotebook, fkEmpresaNotebook, fkParametros, fkEmpresaParametros)
 );
 
+-- SELECT * FROM Alerta
+
 -- Apagar o banco de dados:
-DROP DATABASE Noctoramento;
+-- DROP DATABASE Noctoramento;
