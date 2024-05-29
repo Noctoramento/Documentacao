@@ -1,0 +1,133 @@
+CREATE DATABASE Noctoramento;
+GO
+
+USE Noctoramento;
+GO
+
+-- Criação das tabelas:
+
+CREATE TABLE Empresa (
+    idEmpresa INT PRIMARY KEY IDENTITY(1,1),
+    razaoSocial VARCHAR(45),
+    cnpjEmpresa CHAR(14),
+    email VARCHAR(45),
+    senha VARCHAR(45)
+);
+GO
+
+CREATE TABLE Cargo (
+    idCargo INT PRIMARY KEY IDENTITY(1,1),
+    nomeCargo VARCHAR(45) UNIQUE NOT NULL
+);
+GO
+
+-- Inserindo cargos para melhor gerenciamento da empresa:
+INSERT INTO Cargo (nomeCargo) VALUES ('CEO');
+INSERT INTO Cargo (nomeCargo) VALUES ('Gestor');
+INSERT INTO Cargo (nomeCargo) VALUES ('Gerente');
+INSERT INTO Cargo (nomeCargo) VALUES ('Analista');
+INSERT INTO Cargo (nomeCargo) VALUES ('Desenvolvedor');
+INSERT INTO Cargo (nomeCargo) VALUES ('Estagiário');
+INSERT INTO Cargo (nomeCargo) VALUES ('Suporte');
+GO
+
+CREATE TABLE Usuario (
+    idUsuario INT IDENTITY(1,1) PRIMARY KEY,
+    nomeUsuario VARCHAR(45),
+    emailUsuario VARCHAR(45),
+    senhaUsuario VARCHAR(45),
+    fkEmpresa INT,
+    fkCargo INT,
+    CONSTRAINT fkEmpresa FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa),
+    CONSTRAINT fkCargo FOREIGN KEY (fkCargo) REFERENCES Cargo (idCargo)
+);
+GO
+
+CREATE TABLE Notebook (
+    idNotebook INT PRIMARY KEY IDENTITY(1,1),
+    numeroSerie VARCHAR(45),
+    marca VARCHAR(45),
+    fkEmpresa INT,
+    CONSTRAINT fkEmpresaNotebook FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa)
+);
+GO
+
+CREATE TABLE InfoNotebook (
+    idInfoNotebook INT PRIMARY KEY IDENTITY(1,1),
+    fabricante VARCHAR(45),
+    modelo VARCHAR(45),
+    sistemaOperacional VARCHAR(45),
+    processador VARCHAR(45),
+    capacidadeMaxCpu FLOAT,
+    maxDisco FLOAT,
+    maxMemoriaRam FLOAT,
+    fkNotebook INT,
+    fkEmpresa INT,
+    CONSTRAINT fkEmpresaInfoNotebook FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa),
+    CONSTRAINT fkNotebookInfoNotebook FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook)
+);
+GO
+
+CREATE TABLE Alocacao (
+    dataUsoInicio DATE,
+    dataUsoFim DATE,
+    fkNotebook INT,
+    fkEmpresaNotebook INT,
+    fkUsuario INT,
+    fkEmpresaUsuario INT,
+    CONSTRAINT fkNotebookAlocacao FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook),
+    CONSTRAINT fkEmpresaNotebookAlocacao FOREIGN KEY (fkEmpresaNotebook) REFERENCES Empresa (idEmpresa),
+    CONSTRAINT fkUsuarioAlocacao FOREIGN KEY (fkUsuario) REFERENCES Usuario (idUsuario),
+    CONSTRAINT fkEmpresaUsuarioAlocacao FOREIGN KEY (fkEmpresaUsuario) REFERENCES Empresa (idEmpresa),
+    PRIMARY KEY (fkNotebook, fkUsuario, fkEmpresaUsuario)
+);
+GO
+
+CREATE TABLE Parametros (
+    idParametros INT PRIMARY KEY IDENTITY(1,1),
+    tempoSegCapturaDeDados INT,
+    tempoSegAlertas INT,
+    urgenteUsoCpu FLOAT,
+    urgenteUsoDisco FLOAT,
+    urgenteUsoMemoriaRam FLOAT,
+    alertaUsoCpu FLOAT,
+    alertaUsoDisco FLOAT,
+    alertaUsoMemoriaRam FLOAT,
+    fkEmpresa INT,
+    CONSTRAINT fkEmpresaParametros FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa)
+);
+GO
+
+CREATE TABLE RegistroUsoNotebook (
+    idRegistroUsoNotebook INT PRIMARY KEY IDENTITY(1,1),
+    usoCpu FLOAT,
+    usoDisco FLOAT,
+    tempoAtividadeDisco FLOAT,
+    usoMemoriaRam FLOAT,
+    qtdJanelasEmUso INT,
+    dtHoraCaptura DATETIME,
+    fkNotebook INT,
+    fkEmpresa INT,
+    CONSTRAINT fkNotebookRegistroUsoNotebook FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook),
+    CONSTRAINT fkEmpresaRegistroUsoNotebook FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa)
+);
+GO
+
+CREATE TABLE Alerta (
+    fkRegistroUsoNotebook INT,
+    fkNotebook INT,
+    fkEmpresaNotebook INT,
+    fkParametros INT,
+    fkEmpresaParametros INT,
+    dtHoraAlerta DATETIME,
+    CONSTRAINT fkRegistroUsoNotebookAlerta FOREIGN KEY (fkRegistroUsoNotebook) REFERENCES RegistroUsoNotebook (idRegistroUsoNotebook),
+    CONSTRAINT fkNotebookAlerta FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook),
+    CONSTRAINT fkEmpresaNotebookAlerta FOREIGN KEY (fkEmpresaNotebook) REFERENCES Empresa (idEmpresa),
+    CONSTRAINT fkParametrosAlerta FOREIGN KEY (fkParametros) REFERENCES Parametros (idParametros),
+    CONSTRAINT fkEmpresaParametrosAlerta FOREIGN KEY (fkEmpresaParametros) REFERENCES Empresa (idEmpresa),
+    PRIMARY KEY (fkRegistroUsoNotebook, fkNotebook, fkParametros, fkEmpresaParametros)
+);
+GO
+
+-- Apagar o banco de dados (descomentado para execução):
+-- DROP DATABASE Noctoramento;
