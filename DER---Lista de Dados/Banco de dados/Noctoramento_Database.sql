@@ -3,7 +3,7 @@ CREATE DATABASE Noctoramento;
 USE Noctoramento;
 
 -- Apagar o banco de dados:
--- DROP DATABASE Noctoramento;
+DROP DATABASE Noctoramento;
 
 -- Criação das tabelas:
 
@@ -15,10 +15,7 @@ email VARCHAR(45),
 senha VARCHAR(45)
 );
 
-INSERT INTO Empresa (razaoSocial) VALUES
-('Noctoramento');
-
--- SELECT * FROM Empresa
+-- SELECT * FROM Empresa;
 
 -- INSERT INTO Empresa (razaoSocial, cnpjEmpresa, email, senha) 
 -- VALUES ('Noctoramento', '12345678000195', 'contato@noctoramento.com', 'urubu100');
@@ -52,6 +49,17 @@ PRIMARY KEY (idUsuario, fkEmpresa));
 
 -- SELECT * FROM Usuario;
 
+-- INSERT INTO Usuario (nomeUsuario, emailUsuario, senhaUsuario, fkEmpresa) VALUES
+-- ('Pedro', 'pedro@gmail.com', '123456789', 1);
+
+-- INSERT INTO Usuario (nomeUsuario, emailUsuario, senhaUsuario, fkEmpresa) VALUES
+-- ('Aarthur', 'arthur@gmail.com', '123456789', 1);
+
+-- INSERT INTO Usuario (nomeUsuario, emailUsuario, senhaUsuario, fkEmpresa) VALUES
+-- ('Vitinho', 'vitinho.nunes@gmail.com', '123456789', 1);
+
+-- SELECT fkEmpresa FROM Usuario WHERE idUsuario = 1;
+
 CREATE TABLE Notebook(
 idNotebook INT AUTO_INCREMENT,
 numeroSerie VARCHAR(45),
@@ -62,8 +70,10 @@ fkEmpresa INT,
 CONSTRAINT fkEmpresaNotebook FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa),
 PRIMARY KEY (idNotebook, fkEmpresa));
 
--- INSERT INTO Notebook (numeroSerie, fkEmpresa) VALUES
--- (1234566, 1);
+-- INSERT INTO Notebook (numeroSerie, fabricante, modelo, fkEmpresa) VALUES
+-- (1234566, "fabricante", "modelo", 1);
+
+-- SELECT * FROM Notebook WHERE idNotebook = 1;
 
 -- SELECT * FROM Notebook;
 
@@ -81,7 +91,7 @@ CONSTRAINT fkNotebook FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook),
 PRIMARY KEY (idInfoNotebook, fkEmpresa, fkNotebook)
 );
 
--- SELECT * FROM InfoNotebook
+-- SELECT * FROM InfoNotebook;
 
 CREATE TABLE Alocacao(
 dataUsoInicio DATE,
@@ -96,7 +106,8 @@ CONSTRAINT fkUsuarioAlocacao FOREIGN KEY (fkUsuario) REFERENCES Usuario (idUsuar
 CONSTRAINT fkEmpresaUsuarioAlocacao FOREIGN KEY (fkEmpresaUsuario) REFERENCES Usuario (fkEmpresa),
 PRIMARY KEY (fkNotebook, fkEmpresaNotebook, fkUsuario, fkEmpresaUsuario));
 
--- SELECT * FROM Alocacao
+-- INSERT INTO Alocacao (fkNotebook, fkEmpresaNotebook, fkUsuario, fkEmpresaUsuario) VALUES (1, 1, 1, 1);
+-- SELECT fkNotebook FROM Alocacao WHERE fkUsuario = 1 AND fkEmpresaUsuario = 1;
 
 CREATE TABLE Parametros(
 idParametros INT AUTO_INCREMENT,
@@ -112,13 +123,17 @@ fkEmpresa INT,
 CONSTRAINT fkEmpresaParametros FOREIGN KEY (fkEmpresa) REFERENCES Empresa (idEmpresa),
 PRIMARY KEY (idParametros, fkEmpresa));
 
--- SELECT * FROM Parametros
+-- INSERT INTO Parametros (tempoSegCapturaDeDados, tempoSegAlertas, urgenteUsoCpu, urgenteUsoDisco, urgenteUsoMemoriaRam,
+--    alertaUsoCpu, alertaUsoDisco, alertaUsoMemoriaRam, fkEmpresa) VALUES (60, 120, 90.5, 85.0, 92.3, 1.0, 1.5, 2.0, 1);
+
+-- SELECT * FROM Parametros;
+-- SELECT * FROM Parametros WHERE fkEmpresa = 1;
 
 CREATE TABLE RegistroUsoNotebook(
 idRegistroUsoNotebook INT AUTO_INCREMENT,
 usoCpu DOUBLE,
 usoDisco DOUBLE,
-tempoAtividadeDisco DOUBLE,
+tempoAtividadeDisco VARCHAR(45),
 usoMemoriaRam DOUBLE,
 qtdJanelasEmUso INT,
 dtHoraCaptura DATETIME,
@@ -129,24 +144,20 @@ CONSTRAINT fkEmpresaRegistroUsoNotebook FOREIGN KEY (fkEmpresa) REFERENCES Noteb
 PRIMARY KEY (idRegistroUsoNotebook, fkNotebook, fkEmpresa)
 );
 
--- SELECT * FROM RegistroUsoNotebook
+-- SELECT * FROM RegistroUsoNotebook order by idRegistroUsoNotebook desc;
 
 CREATE TABLE Alerta(
-fkRegistroUsoNotebook INT,
-fkNotebook INT,
-fkEmpresaNotebook INT,
+idAlerta INT AUTO_INCREMENT,
 fkParametros INT,
 fkEmpresaParametros INT,
-dtHoraAlerta DATETIME,
-CONSTRAINT fkRegistroUsoNotebookAlerta FOREIGN KEY (fkRegistroUsoNotebook) REFERENCES RegistroUsoNotebook (idRegistroUsoNotebook),
-CONSTRAINT fkNotebookAlerta FOREIGN KEY (fkNotebook) REFERENCES Notebook (idNotebook),
-CONSTRAINT fkEmpresaNotebookAlerta FOREIGN KEY (fkEmpresaNotebook) REFERENCES Notebook (fkEmpresa),
+dtHoraAlerta TIMESTAMP DEFAULT NOW(),
 CONSTRAINT fkParametrosAlerta FOREIGN KEY (fkParametros) REFERENCES Parametros (idParametros),
 CONSTRAINT fkEmpresaParametrosAlerta FOREIGN KEY (fkEmpresaParametros) REFERENCES Parametros (fkEmpresa),
-PRIMARY KEY (fkRegistroUsoNotebook, fkNotebook, fkEmpresaNotebook, fkParametros, fkEmpresaParametros)
+PRIMARY KEY (idAlerta, fkParametros, fkEmpresaParametros)
 );
 
--- SELECT * FROM Alerta
+-- SELECT * FROM Alerta;
+-- INSERT INTO Alerta (fkParametros, fkEmpresaParametros) VALUES (1, 1);
 
 -- Apagar o banco de dados:
 -- DROP DATABASE Noctoramento;
