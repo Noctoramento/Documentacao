@@ -1,9 +1,9 @@
-CREATE DATABASE IF NOT EXISTS Noctoramento;
+CREATE DATABASE Noctoramento;
 USE Noctoramento;
 
 -- DROP DATABASE Noctoramento;
 
-CREATE TABLE IF NOT EXISTS Empresa (
+CREATE TABLE Empresa (
     idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
     razaoSocial VARCHAR(45),
     cnpjEmpresa CHAR(14),
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS Empresa (
 -- INSERT INTO Empresa (razaoSocial, cnpjEmpresa, email, senha) VALUES 
 -- ('Noctoramento', '12345678000195', 'contato@noctoramento.com', 'urubu100');
 
-CREATE TABLE IF NOT EXISTS Cargo (
+CREATE TABLE Cargo (
     idCargo INT PRIMARY KEY AUTO_INCREMENT,
     nomeCargo VARCHAR(45) UNIQUE NOT NULL
 );
@@ -32,7 +32,7 @@ INSERT INTO Cargo (nomeCargo) VALUES
 
 -- SELECT * FROM Cargo;
 
-CREATE TABLE IF NOT EXISTS Usuario (
+CREATE TABLE Usuario (
     idUsuario INT AUTO_INCREMENT,
     nomeUsuario VARCHAR(45),
     emailUsuario VARCHAR(45),
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS Usuario (
 
 -- SELECT * FROM Usuario;
 
-CREATE TABLE IF NOT EXISTS Notebook(
+CREATE TABLE Notebook(
     idNotebook INT AUTO_INCREMENT,
     numeroSerie VARCHAR(45),
     fabricante VARCHAR(45),
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS Notebook(
 
 -- SELECT * FROM Notebook;
 
-CREATE TABLE IF NOT EXISTS InfoNotebook(
+CREATE TABLE InfoNotebook(
     idInfoNotebook INT AUTO_INCREMENT,
     sistemaOperacional VARCHAR(45),
     processador VARCHAR(45),
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS InfoNotebook(
 
 -- SELECT * FROM InfoNotebook;
 
-CREATE TABLE IF NOT EXISTS Alocacao(
+CREATE TABLE Alocacao(
     dataUsoInicio DATE,
     dataUsoFim DATE,
     fkNotebook INT,
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS Alocacao(
 
 -- SELECT * FROM Alocacao;
 
-CREATE TABLE IF NOT EXISTS Parametros(
+CREATE TABLE Parametros(
     idParametros INT AUTO_INCREMENT,
     tempoSegCapturaDeDados INT,
     tempoSegAlertas INT,
@@ -140,7 +140,7 @@ PRIMARY KEY (idRegistroUsoNotebook, fkNotebook, fkEmpresa)
 
 -- SELECT * FROM RegistroUsoNotebook;
 
-CREATE TABLE IF NOT EXISTS Alerta(
+CREATE TABLE Alerta(
     idAlerta INT AUTO_INCREMENT,
     fkParametros INT,
     fkEmpresaParametros INT,
